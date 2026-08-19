@@ -1,134 +1,49 @@
-# 🛒 E-Commerce API - TechFlow / Forja
+# TechFlow API - Backend 
 
----
+## 📋 Introdução
+O **TechFlow** é um sistema completo de gerenciamento para assistências técnicas especializadas em aparelhos eletrônicos (smartphones, notebooks, tablets, etc.). O sistema resolve o problema de falta de controle de ordens de serviço, fluxo de reparos e comunicação interna entre gestores e técnicos.
 
-## 📌 Introdução
-* **Projeto:** Backend E-Commerce TechFlow
-* **Problema que resolve:** Prover uma infraestrutura escalável e segura para cadastro, gerenciamento e consulta de produtos e usuários para uma plataforma de e-commerce de eletrônicos e periféricos.
-* **Público-Alvo:** Clientes finais e administradores da loja.
-   
-* E o front se comunica com o backend através da http
+- **Público-alvo:** Proprietários de assistências técnicas, gestores de serviços e técnicos de manutenção de eletrônicos.
+
 ---
 
 ## 🛠️ Tecnologias Utilizadas
-* **Linguagem:** TypeScript
-* **Runtime:** Node.js
-* **Framework Web:** Express
-* **ORM:** Prisma ORM
-* **Banco de Dados:** MySQL (via XAMPP)
-* **Documentação de API:** Swagger UI
-* **Segurança:** CORS Middleware
+- **Ambiente de Execução:** Node.js v20+
+- **Linguagem:** TypeScript
+- **Framework Web:** Express
+- **ORM (Mapeamento de Banco):** Prisma ORM
+- **Banco de Dados:** MySQL (via XAMPP/Local)
+- **Autenticação e Segurança:** JWT (JSON Web Token) & BcryptJS
+- **Documentação da API:** Swagger UI
 
 ---
 
-## 🏗️ Arquitetura do Sistema
-O backend foi construído seguindo o padrão de **Camadas (Controller/Service)** e arquitetura REST:
+## 📐 Arquitetura do Sistema
+O sistema foi desenvolvido seguindo o padrão de arquitetura em camadas (**MSC - Model, Service, Controller**), garantindo a separação de responsabilidades:
 
-
-[ Frontend / Mobile ] ──(HTTP JSON)──> [ Express Router ]
-│
-[ Controllers ]
-│
-[ Services ]
-│
-[ Prisma Client ]
-│
-[ Banco MySQL ]
-
+- **Config:** Centraliza conexões com o banco de dados (Prisma) e especificações do Swagger.
+- **Controllers:** Camada responsável por receber as requisições HTTP, capturar os parâmetros/body e devolver as respostas.
+- **Services:** Camada de regras de negócio, validações de segurança e comunicação direta com o banco de dados através do Prisma.
 
 ---
 
-## 📋 Rotas da API
+## 📄 Documentação da API (Rotas)
 
-| Método | Rota            | Descrição                            |  Status HTTP  |
-| :----- | :-------------- | :----------------------------------- | :-----------: |
-| `POST` | `/usuarios`     | Cadastra um novo usuário/cliente     |     `201`     |
-| `POST` | `/login`        | Autenticação de usuário              | `200` / `401` |
-| `GET`  | `/produtos`     | Listagem completa de produtos        |     `200`     |
-| `GET`  | `/produtos/:id` | Busca detalhes de um produto por ID  | `200` / `404` |
-| `POST` | `/produtos`     | Cadastra um novo produto no catálogo |     `201`     |
+A documentação interativa e completa da API está disponível via Swagger na rota `/api-docs`.
 
-> 💡 A documentação interativa das rotas pode ser acessada em `http://localhost:8080/api-docs` via Swagger com a API rodando.
+| Método | Rota       | Descrição                                         | Autenticação |
+| :----- | :--------- | :------------------------------------------------ | :----------- |
+| POST   | `/usuarios`| Cadastra um novo funcionário (GESTOR ou TECNICO)  | Nenhuma      |
+| POST   | `/login`   | Realiza a autenticação e gera o Token JWT         | Nenhuma      |
+| POST   | `/ordens`  | Abre uma nova OS de aparelho eletrônico           | Nenhuma      |
+| GET    | `/ordens`  | Lista todas as ordens de serviço registradas      | Nenhuma      |
 
----
-
-## 🗄️ Estrutura do Banco de Dados (MySQL)
-
-Tabela **`produto`**:
-* `id` (String / UUID - Chave Primária)
-* `nome` (String)
-* `descricao` (Text)
-* `preco` (Decimal)
-* `imageUrl` (String)
-* `categoria` (String)
-* `criadoEm` (Timestamp)
-* `atualizadoEm` (Timestamp)
-
-Tabela **`usuarios`**:
-* `id` (String / UUID - Chave Primária)
-* `nome` (String)
-* `email` (String - Único)
-* `senha` (String - Hash)
-
----
-
-## 🚀 Como Executar o Projeto
-
-### Pré-requisitos
-* Node.js instalado
-* XAMPP (servidor MySQL ativo na porta 3306)
-
-### Passo a Passo
-
-1. **Clonar o repositório:**
-   ```bash
-   git clone <(https://github.com/Xand1nho/E-CommerceDoForja_Backend.git)>
-
-2. **Navegar para a pasta do backend:**
-   ```bash
-   cd AssistenciaTecnicaForja_Backend
-
-3. **Instalar as dependências:**
-   ```bash
-   npm install
-   ```
-
-4. **Configurar as Variáveis de Ambiente:**
- Crie um arquivo .env na raiz do projeto backend com as seguintes configurações:
- DATABASE_URL="mysql://root:@localhost:3306/techflow_db"
- PORT=8080
-
-5. **Configurar o Banco de Dados (Prisma):**
-Execute o db push para sincronizar o schema do Prisma com o MySQL:
-
-Bash
-npx prisma db push
-
-
-6. **Popular o Banco de Dados (Seed):**
-Popule o banco com os produtos iniciais cadastrados:
-
-Bash
-npx tsx prisma/seed.ts
-
-
-7. **Iniciar o Servidor em Modo de Desenvolvimento:**
-
-Bash
-npm run dev
-
-A API estará rodando em http://localhost:8080.
-
-
-**🔒 Segurança e Tratamento de Erros**
-
-*Criptografia de Senhas*: Utilização do pacote bcrypt para geração de hash de senhas antes de salvar no banco de dados.
-
-CORS: Middleware cors habilitado para permitir requisições com a origem do Frontend Next.js (http://localhost:3000).
-
-Validação de Erros: Respostas tratadas em padrão JSON contendo mensagens amigáveis em caso de exceções (400 Bad Request, 401 Unauthorized, 404 Not Found).
-
-👥 Integrantes do Projeto
-Samuel / Alexandre   Equipe Forja — Desenvolvimento Full Stack (Backend & Frontend)
-
-
+### Exemplos de Requisição:
+- **POST /ordens (Criar OS de Eletrônico):**
+  ```json
+  {
+    "clienteNome": "Carlos Henrique",
+    "equipamento": "Samsung Galaxy S23",
+    "defeito": "Tela quebrada e conector de carga ruim",
+    "valor": 450.00
+  }

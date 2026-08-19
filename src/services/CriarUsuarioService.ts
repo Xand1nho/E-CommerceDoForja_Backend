@@ -1,29 +1,30 @@
-import bcrypt from "bcrypt";
-import { prisma } from "../../config/prisma";
+import { prisma } from '../../config/prisma';
 
-interface RequestUsuario {
+interface CriarUsuarioRequest {
   nome: string;
   email: string;
   senha: string;
 }
 
 export class CriarUsuarioService {
-  async execute({ nome, email, senha }: RequestUsuario) {
+  async execute({ nome, email, senha }: CriarUsuarioRequest) {
+    if (!email || !senha) {
+      throw new Error('E-mail e senha são obrigatórios');
+    }
+
     const usuarioExiste = await prisma.usuario.findUnique({
       where: { email },
     });
 
     if (usuarioExiste) {
-      throw new Error("Este e-mail já está em uso.");
+      throw new Error('Este e-mail já está cadastrado');
     }
-
-    const senhaHash = await bcrypt.hash(senha, 10);
 
     const usuario = await prisma.usuario.create({
       data: {
         nome,
         email,
-        senha: senhaHash,
+        senha,
       },
       select: {
         id: true,

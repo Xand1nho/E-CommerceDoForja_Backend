@@ -1,31 +1,31 @@
-import bcrypt from "bcrypt";
-import { prisma } from "../../config/prisma";
+import { prisma } from '../../config/prisma';
 
-interface RequestLogin {
-  email: string;
-  senha: string;
+interface LoginUsuarioRequest {
+    email: string;
+    senha: string;
 }
 
 export class LoginUsuarioService {
-  async execute({ email, senha }: RequestLogin) {
-    const usuario = await prisma.usuario.findUnique({
-      where: { email },
-    });
+    async execute({ email, senha }: LoginUsuarioRequest) {
+        if (!email || !senha) {
+            throw new Error('Preencha e-mail e senha');
+        }
 
-    if (!usuario) {
-      throw new Error("E-mail ou senha incorretos.");
+        const usuario = await prisma.usuario.findUnique({
+            where: { email }
+        });
+
+        if (!usuario || usuario.senha !== senha) {
+            throw new Error('E-mail ou senha incorretos');
+        }
+
+        return {
+            usuario: {
+                id: usuario.id,
+                nome: usuario.nome,
+                email: usuario.email
+            },
+            mensagem: 'Login realizado com sucesso'
+        };
     }
-
-    const senhaValida = await bcrypt.compare(senha, usuario.senha);
-
-    if (!senhaValida) {
-      throw new Error("E-mail ou senha incorretos.");
-    }
-
-    return {
-      id: usuario.id,
-      nome: usuario.nome,
-      email: usuario.email,
-    };
-  }
 }

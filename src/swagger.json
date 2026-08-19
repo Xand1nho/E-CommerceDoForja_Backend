@@ -25,7 +25,7 @@
                                 "properties": {
                                     "nome": { "type": "string", "example": "João Silva" },
                                     "email": { "type": "string", "example": "joao@email.com" },
-                                    "senha": { "type": "string", "example": "123456" }
+                                    "senha": { "type": "string", "example": "123456" },
                                 }
                             }
                         }
