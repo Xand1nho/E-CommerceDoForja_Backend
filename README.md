@@ -131,5 +131,4 @@ Validação de Erros: Respostas tratadas em padrão JSON contendo mensagens amig
 👥 Integrantes do Projeto
 Samuel / Alexandre   Equipe Forja — Desenvolvimento Full Stack (Backend & Frontend)
 
-📜 Licença
-Este projeto foi desenvolvido estritamente para fins acadêmicos como parte do Trabalho de Conclusão de Curso (TCC).
+
