@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+datasource db {
+  provider = "mysql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/client"
+}
+
+model Usuario {
+  id            String         @id @default(uuid())
+  nome          String
+  email         String         @unique
+  senha         String
+  criadoEm      DateTime       @default(now())
+  atualizadoEm  DateTime       @updatedAt
+  ordemServicos OrdemServico[]
+
+  @@map("usuarios")
+}
+
+// Tabela de Ordens de Serviço (OS)
+model OrdemServico {
+  id           String   @id @default(uuid())
+  clienteNome  String
+  equipamento  String
+  defeito      String
+  status       String   @default("ABERTA")
+  valor        Decimal? @db.Decimal(10, 2)
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  tecnicoId String?
+  tecnico   Usuario? @relation(fields: [tecnicoId], references: [id])
+
+  @@map("ordens_servico")
+}
+
+model Produto {
+  id           String   @id @default(uuid())
+  nome         String
+  descricao    String
+  preco        Float
+  imagemUrl    String? // Link da imagem do produto
+  categoria    String // Ex: "TV", "NOTEBOOK", "COMPUTADOR"
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
